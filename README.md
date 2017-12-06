@@ -1,6 +1,6 @@
 ## The Magic Square
 
-It is a game in java, based on the  [magic square](https://en.wikipedia.org/wiki/Arithmetic_progression) problem.
+It is a game in java, based on the  [magic square](https://en.wikipedia.org/wiki/Magic_square) problem.
 
 #### What is the Magic Square?
 
@@ -60,4 +60,3 @@ that there are no magic squares of order 2.
 - Of order 5 formed by the numbers from 1 to 25, that contains another Magic Square of order 3 inside.
 - The magic constant of the major square is equal to 75. The square of minor size is 45.
 ![](design/examples2.png)
-
