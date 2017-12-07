@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-
-
 /** 
  * shows the magic square game interface, and is responsible 
  * for controlling the model and the view
@@ -40,29 +38,13 @@ public class MagicSquareController {
 
 		// 
 		magicSquareView.init();
-
-		// 
-		magicSquareModel.isMagicSquare();
-
-		// if the data entered by the user was correct
-		if ( magicSquareModel.read() ) 
-		{  
-			// the magic square is valid
-			if ( magicSquareModel.isMagicSquare() && magicSquareModel.isValid())
-			{
-				System.out.print("Magic Square");
-			}
-		}
-		else
-		{
-			System.out.print("Invalid Data");
-		}
+		
 	}
 
 
 
 	/**
-	 * hacer un metodo que reporte las dimensiones 
+	 * Falta hacer un metodo que reporte las dimensiones 
 	 * 
 	 */
 

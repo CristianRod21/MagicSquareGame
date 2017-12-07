@@ -1,4 +1,3 @@
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,9 +10,10 @@ import javax.swing.JButton;
  * 
  * @author Diego Orozco & Cristian Rodriguez
  */
+
 public class MagicSquereModel extends Thread 
 {
-	//
+	// a reference to the matrix with the buttons
 	JButton gameMatrix[][] = null;
 
 	// 	variable to save the dimensions of the square
@@ -30,7 +30,7 @@ public class MagicSquereModel extends Thread
 
 
 	/**
-	 * constructor
+	 * Constructor
 	 * @param magicSquareMatrix
 	 * @param dimensions
 	 */
@@ -41,18 +41,16 @@ public class MagicSquereModel extends Thread
 	}
 
 	/**
-	 * constructor
+	 *  Default Constructor
 	 */
 	public MagicSquereModel() 
 	{
 
 	}
 
-	
-
 	/**
-	 *  create the matrix and read the data given by the user
-	 * @return
+	 *  Creates the matrix and read the data given by the user
+	 * @return a boolean, that determinate if the matrix was able to read
 	 */
 	public boolean read()
 	{
@@ -62,7 +60,7 @@ public class MagicSquereModel extends Thread
 		// create the matrix to save the data type int
 		this.magicSquare = new long [dimensions][dimensions];
 
-		// convert string data to integers
+		// Convert string data from the buttons to integers
 		try
 		{
 			for ( int rows = 0; rows < this.dimensions; ++rows )
@@ -75,7 +73,8 @@ public class MagicSquereModel extends Thread
 				}
 			}
 		}
-		catch( InputMismatchException e)
+		// In case of invalid data
+		catch( InputMismatchException exeption)
 		{
 			return false;
 		}
@@ -84,10 +83,10 @@ public class MagicSquereModel extends Thread
 	}
 
 	/**
-	 * method that is responsible for the validation 
+	 * Method that is responsible for the validation 
 	 * of the information and check of the validity 
 	 * of the magic picture, calls sub-methods that 
-	 * realize the vertical check, horizonal and diagonal
+	 * realize the vertical check, horizontal and diagonal
 	 * 
 	 * @return true if it is valid
 	 */
@@ -114,7 +113,7 @@ public class MagicSquereModel extends Thread
 	}
 
 	/**
-	 * check that the sum of all the rows equals the magic constant
+	 * Check that the sum of all the rows equals the magic constant
 	 */
 	public void checkRows()
 	{
@@ -176,7 +175,7 @@ public class MagicSquereModel extends Thread
 		{
 			sumValues += magicSquare[row][row];
 		}
-		
+
 		// if the total sum is different from the constant, it is not a magic square
 		if (sumValues != this.magicConstant)
 		{
@@ -184,7 +183,7 @@ public class MagicSquereModel extends Thread
 		}
 
 		sumValues = 0;
-		
+
 		for (int row = this.dimensions - 1; row >= 0; row--)
 		{
 			sumValues += magicSquare[row][row];
@@ -222,7 +221,6 @@ public class MagicSquereModel extends Thread
 	 */
 	public void startGame()
 	{
-		int cont=1;
 
 		gameMatrix[0][0].setText(""+4);
 		gameMatrix[0][1].setText(""+9);
