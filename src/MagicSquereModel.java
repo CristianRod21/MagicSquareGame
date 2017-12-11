@@ -27,6 +27,8 @@ public class MagicSquereModel extends Thread
 
 	// Final variable that it determines if the picture fulfills the conditions to be a magic square
 	private boolean isValid = true;
+	
+	private String level = null;
 
 
 	/**
@@ -34,10 +36,11 @@ public class MagicSquereModel extends Thread
 	 * @param magicSquareMatrix
 	 * @param dimensions
 	 */
-	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions)
+	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions, String level)
 	{
 		this.gameMatrix = magicSquareMatrix;
 		this.dimensions =dimensions;
+		this.level = level;
 	}
 
 	/**
@@ -65,14 +68,16 @@ public class MagicSquereModel extends Thread
 		// Convert string data from the buttons to integers
 		try
 		{
+			int number = 0;
 			for ( int rows = 0; rows < this.dimensions; ++rows )
 			{
 				// Read all values for current row
 				for ( int col = 0; col < this.dimensions; col++ )
 				{
 					// convert the data in String of each cell of the magic square given by the user
-					this.magicSquare[rows][col] = Integer.parseInt( gameMatrix[rows][col].getText() );
+					System.out.print ( this.magicSquare[rows][col] = level.charAt(number++) );
 				}
+				System.out.println();
 			}
 		}
 		// In case of invalid data
@@ -223,8 +228,8 @@ public class MagicSquereModel extends Thread
 	 */
 	public void startGame()
 	{
-
-		gameMatrix[0][0].setText(""+4);
+/*
+		gameMatrix[0][0].setText(""+10);
 		gameMatrix[0][1].setText(""+9);
 		gameMatrix[0][2].setText(""+2);
 		gameMatrix[1][0].setText(""+3);
@@ -233,9 +238,34 @@ public class MagicSquereModel extends Thread
 		gameMatrix[2][0].setText(""+8);
 		gameMatrix[2][1].setText(""+1);
 		gameMatrix[2][2].setText(""+6);
-
+*/
 	}
 
 
+	 public void readTxt(){
+		    try {
+		        //ruta de tu archivo
+		        String ruta = "archivo.txt"
+		        BufferedReader br = getBuffered(ruta);
+		        //leemos la primera linea
+		        String linea =  br.readLine();
+		        //creamos la matriz vacia
+		        char[][] = new char[8][11];
+		        //contador
+		        int contador = 0;
+		        while(linea != null){
+		            String[] values = linea.split(",");
+		            //recorremos el arrar de string
+		            for (int i = 0; i<values.length; i++) {
+		                //se obtiene el primer caracter de el arreglo de strings
+		                char[contador][i] = values[i].charAt(0);
+		            }
+		            contador++;
+		            linea = br.readLine();
+		        }
+		    } catch (IOException | NumberFormatException e) {
+		        e.printStackTrace();
+		    }
+		}
 
 }

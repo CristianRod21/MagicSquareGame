@@ -277,7 +277,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 				magicConstat.setText("All rows and columns must add: " + constant * ((constant*constant + 1) / 2));
 
 				// Creates a reference to the model
-				magicSquareModel = new MagicSquereModel(gameMatrix,Integer.parseInt(sizesComboBox.getSelectedItem().toString()));
+				magicSquareModel = new MagicSquereModel(gameMatrix,Integer.parseInt(sizesComboBox.getSelectedItem().toString()), "/asset/level01.txt" );
 
 				
 				for(int rows=0;rows<gameMatrix.length;rows++)
@@ -286,6 +286,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 					{
 						ActionListener myButtonListener = new ButtonListener();
 						gameMatrix[rows][cols].addActionListener(myButtonListener);
+
 					}
 				}
 
@@ -389,25 +390,30 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 
 	}
-}
-
-class ButtonListener implements ActionListener 
-{
-	private String newNumber;
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JButton source = (JButton) e.getSource();
-		this.newNumber = JOptionPane.showInputDialog(source, source.getText() + " Insert the number");
-	}
 	
 	
-	public String getNumber()
+	class ButtonListener extends MagicSquareView implements ActionListener 
 	{
-		return this.newNumber;
+		private String newNumber;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton source = (JButton) e.getSource();
+			this.newNumber = JOptionPane.showInputDialog(source, source.getText() + " Insert the number");
+
+		}
+		
+		
+		public String getNumber()
+		{
+			return this.newNumber;
+		}
+
 	}
 
+
+
+
+	
 }
-
-
 
