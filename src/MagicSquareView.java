@@ -36,6 +36,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 	// A JPanel that will be located at the center
 	private JPanel centerPosition = null;
 
+
 	
 	// The Jbutton, to star the game
 	private JButton startButton = null;
@@ -73,8 +74,20 @@ public class MagicSquareView extends JApplet implements ActionListener
 		createView();
 
 		gameStarted();
+		
+		JOptionPane.showMessageDialog(null, "Welcome to Magic Square Game\n" +
+				                            "To begin to play, first you must write your " +
+				                            "name and select the level that wants to begin.", 
+				                            "Instruction",
+				                            JOptionPane.WARNING_MESSAGE);
 
 
+	}
+	
+	
+	public void createViewWelcome()
+	{
+		
 	}
 
 	/**
@@ -88,7 +101,6 @@ public class MagicSquareView extends JApplet implements ActionListener
 		// Makes the center JPanel
 		centerPosition = new JPanel();
 		this.setSize(640, 480);
-
 		// Esthetic change
 		this.changeButtonsSkin();
 
@@ -105,6 +117,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 		this.add(lowerPanel ,BorderLayout.NORTH);
 		this.add(indicatorPanel ,BorderLayout.SOUTH);
 		this.add(centerPosition,BorderLayout.CENTER);
+
 	}
 
 	/**
@@ -279,6 +292,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 				// See the class javadoc for more information
 				magicSquareModel.startGame();
 				magicSquareModel.read();
+				
+				
+
 
 				/**
 				 * Its a quick fix, its necessary to review this, in order
@@ -303,7 +319,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 			// the magic square is valid
 			if ( magicSquareModel.isMagicSquare() && magicSquareModel.isValid())
 			{
-				System.out.print("You win, is a Magic Square");
+				JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
 			}
 		}
 		else
