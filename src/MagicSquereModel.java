@@ -1,4 +1,10 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -36,11 +42,19 @@ public class MagicSquereModel extends Thread
 	 * @param magicSquareMatrix
 	 * @param dimensions
 	 */
-	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions, String level)
+	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions)
 	{
 		this.gameMatrix = magicSquareMatrix;
 		this.dimensions =dimensions;
-		this.level = level;
+
+		for(int rows=0;rows< this.dimensions;rows++)
+		{
+			for(int cols=0;cols<dimensions;cols++)
+			{
+				gameMatrix[rows][cols].setText("");;
+			}
+
+		}
 	}
 
 	/**
@@ -55,39 +69,72 @@ public class MagicSquereModel extends Thread
 	 *  Creates the matrix and read the data given by the user
 	 * @return a boolean, that determinate if the matrix was able to read
 	 */
-	public boolean read()
+public boolean read()
+{
+
+	boolean random1 = new Random().nextBoolean();
+	int myInt = (random1) ? 1 : 0;
+	
+	  File file = new File("C:\\Users\\Cristian\\Desktop\\MagicSquareGame\\assets\\" + "level0" + (dimensions-2) + "-0"  + (myInt + 1)   + ".txt");
+	  
+	  BufferedReader br = null;
+		try 
+		{
+			br = new BufferedReader(new FileReader(file));
+		} catch (FileNotFoundException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+	
+	// calculate the magic constant
+	this.magicConstant = (dimensions *( (dimensions*dimensions + 1) / 2));
+
+	// create the matrix to save the data type int
+	this.magicSquare = new long [dimensions][dimensions];
+
+	// Convert string data from the buttons to integers
+	try
 	{
+	
 		
-		
-		// calculate the magic constant
-		this.magicConstant = (dimensions *( (dimensions*dimensions + 1) / 2));
-
-		// create the matrix to save the data type int
-		this.magicSquare = new long [dimensions][dimensions];
-
-		// Convert string data from the buttons to integers
-		try
+		for ( int rows = 0; rows < this.dimensions; ++rows )
 		{
-			int number = 0;
-			for ( int rows = 0; rows < this.dimensions; ++rows )
+			// Read all values for current row
+			for ( int col = 0; col < this.dimensions; col++ )
 			{
-				// Read all values for current row
-				for ( int col = 0; col < this.dimensions; col++ )
+				boolean random = new Random().nextBoolean();
+				try
 				{
-					// convert the data in String of each cell of the magic square given by the user
-					System.out.print ( this.magicSquare[rows][col] = level.charAt(number++) );
+											
+					String temp = String.valueOf((char)br.read()) ;
+					
+					if (random)
+					{
+					gameMatrix[rows][col].setText(temp.trim());
+					}		
+											
+					
 				}
-				System.out.println();
-			}
-		}
-		// In case of invalid data
-		catch( InputMismatchException exeption)
-		{
-			return false;
-		}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-		return true;
+			}
+			System.out.println();
+		}
 	}
+	// In case of invalid data
+	catch( InputMismatchException exeption)
+	{
+		return false;
+	}
+
+	return true;
+}
 
 	/**
 	 * Method that is responsible for the validation 
