@@ -36,41 +36,54 @@ public class MagicSquareView extends JApplet implements ActionListener
 	private JComboBox unknownComboBox = null;
 
 	// An array with the levels of the game
-	private String gameLevels[]= {"3","4","5","6", "7", "8"};
+	private String gameLevels[]= {"-","3","4","5","6", "7", "8"};
 
-	private String unknowLevels[]= {"3","6","9","12", "15"};
+	private String unknowLevels[]= {"-","Yes", "No"};
+
+	private boolean unknow = false;
 
 	// A JPanel that will be located at the center
 	private JPanel centerPosition = null;
 
+	//
 	private JLabel picLabel  = null;
 
 	// The Jbutton, to star the game
 	private JButton startButton = null;
 
+	//
+	private JButton summit = null;
+
 	// Contents the magic constant number
 	private JLabel magicConstat = null;
 
+	//
 	private JLabel magicTime = null;
-
 
 	// The main lower panel
 	private JPanel lowerPanel = null;
 
+	//
 	private JPanel indicatorPanel = null;
 
 
+	//
 	MagicSquereModel magicSquareModel = null;
 
-
+	//
 	private Timer elapsedTime = null;
+
+	//
 	private long elapsedSeconds = 0;
 
+	//
 	private int level = 1;
 
+	//
 	private int dimension = 0;
 
-
+	//
+	private boolean valuesSelect = false;
 
 	/**
 	 * This methods calls the JApplet to run 
@@ -83,12 +96,13 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 		createView();
 
-
 		gameStarted();
-
 	}
 
 
+	/**
+	 * 
+	 */
 	public void createViewWelcome()
 	{
 		BufferedImage myPicture = null;
@@ -98,11 +112,11 @@ public class MagicSquareView extends JApplet implements ActionListener
 		}
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		picLabel = new JLabel(new ImageIcon(myPicture));
+		picLabel.setSize(centerPosition.getWidth(), centerPosition.getHeight());
 		centerPosition.add(picLabel, BorderLayout.CENTER);;
 		repaint();
 	}
@@ -120,27 +134,39 @@ public class MagicSquareView extends JApplet implements ActionListener
 		centerPosition = new JPanel();
 
 		// Esthetic change
-		this.changeButtonsSkin();
+		changeButtonsSkin();
 
 		// 
 		createLowerPanel();
 
-
+		//
 		createViewWelcome();
 
 		//
 		createIndicatorPanel();
 
 		//
-		createTheButtons();
-		
+		sizesComboBoxButtons();
 
+		//
+		unknownBoxButtons();
+
+		//
+		summitButtons();
+
+		//
+		addComponents();
+	}
+
+	/**
+	 * 
+	 */
+	public void addComponents()
+	{
 		// Adds the created elements to the entire view
 		this.add(lowerPanel ,BorderLayout.NORTH);
 		this.add(indicatorPanel ,BorderLayout.SOUTH);
 		this.add(centerPosition,BorderLayout.CENTER);
-		
-
 	}
 
 	/**
@@ -187,10 +213,10 @@ public class MagicSquareView extends JApplet implements ActionListener
 		//
 		createElapsedTime();
 		indicatorPanel.add(magicTime, BorderLayout.EAST);
-		
-		JButton summit = new JButton("Summit");
-		indicatorPanel.add(summit, BorderLayout.CENTER);
-		
+
+		//
+		summit = new JButton("Summit");
+		indicatorPanel.add(summit);
 	}
 
 	/**
@@ -220,7 +246,6 @@ public class MagicSquareView extends JApplet implements ActionListener
 		magicConstat = new JLabel("All rows and columns must add: ");
 		magicConstat.setBackground(new Color(220, 20, 60));
 		magicConstat.setFont(new Font("Serif", Font.PLAIN, 20));
-
 	}
 
 	/**
@@ -233,7 +258,6 @@ public class MagicSquareView extends JApplet implements ActionListener
 		magicTime.setFont(new Font("Serif", Font.PLAIN, 20));
 		this.elapsedTime = new Timer(1000, this);
 		this.elapsedTime.start();
-
 	}
 
 	/**
@@ -245,15 +269,41 @@ public class MagicSquareView extends JApplet implements ActionListener
 		return this.level;	
 	}
 
+	/**
+	 * 
+	 */
+	public void unknownBoxButtons()
+	{
+		this.unknownComboBox.addItemListener(new ItemListener()
+		{
+			@Override public void itemStateChanged(ItemEvent event) 
+			{
+				// If the item was selected
+				if(event.getStateChange() == ItemEvent.SELECTED)
+				{	
+					if (unknownComboBox.getSelectedItem().toString().equals("Yes"))
+					{
+						unknow = true;		
+						valuesSelect = true;
+					}
+					else if (unknownComboBox.getSelectedItem().toString().equals("No"))
+					{
+						unknow = false;		
+						valuesSelect = true;						
+					}
+
+				}	
+			}
+		} );
+	}
 
 	/**
 	 * Makes an item listener in order to know which
 	 * level options was choose and reacts according
 	 * to the user desire
-	 */
-	public void createTheButtons()
+	 */	
+	public void sizesComboBoxButtons()
 	{
-
 		sizesComboBox.addItemListener(new ItemListener()
 		{
 			@Override public void itemStateChanged(ItemEvent event) 
@@ -261,42 +311,30 @@ public class MagicSquareView extends JApplet implements ActionListener
 				// If the item was selected
 				if(event.getStateChange() == ItemEvent.SELECTED)
 				{
-					
-					// Remove all the previous buttons from the old level
-					centerPosition.removeAll();
-					// Gets the selected level, and create a matrix of buttons according to the user
-					// desired level
-
 					dimension = Integer.parseInt(sizesComboBox.getSelectedItem().toString());
-
-					gameMatrix = new JButton[dimension][dimension];
-					// Makes a gridLayout of the matrix length
-					centerPosition.setLayout(new GridLayout(gameMatrix.length,gameMatrix.length));
-
-
-
-					// Fills the gridLayout with the buttons 
-					for(int rows=0;rows<gameMatrix.length;rows++)
-					{
-						for(int cols=0;cols<gameMatrix.length;cols++)
-						{
-							gameMatrix[rows][cols] =  new JButton();
-
-							gameMatrix[rows][cols].setFont(new Font("Serif", Font.PLAIN, 30));
-
-
-							centerPosition.add(gameMatrix[rows][cols]);	
-						}
-					}
-					centerPosition.updateUI();
-					repaint();
 				}
-				
 			}
-			
 		} );
-		
 	}
+
+	/**
+	 * 
+	 */
+	public void summitButtons()
+	{
+		summit.addActionListener(new ActionListener()
+		{
+			// When the start button is pressed
+			@Override public void actionPerformed(ActionEvent event)
+			{
+				if ( magicSquareModel.isMagicSquare() )
+				{
+					JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
+				}
+			}
+		} );
+	}
+
 
 	/**
 	 * When the start button is pressed
@@ -304,59 +342,98 @@ public class MagicSquareView extends JApplet implements ActionListener
 	 */
 	public void gameStarted()
 	{
-
 		startButton.addActionListener(new ActionListener()
 		{
 			// When the start button is pressed
 			@Override public void actionPerformed(ActionEvent event)
 			{
-				/**
-				 * Its a quick fix, its necessary to review this, in order
-				 * to keep the neutrality of the MVC standar
-				 */
-				for(int rows=0;rows<gameMatrix.length;rows++)
+				if (dimension != 0 && valuesSelect)
 				{
-					for(int cols=0;cols<gameMatrix.length;cols++)
-					{
-						gameMatrix[rows][cols].setText("");
+					//
+					createTheButtons();
 
-					}
+					//
+					fillTheMatrix();
+					//
+					updateElapsedTime();
+					
+					// Get the number of the level
+					int constant = Integer.parseInt(sizesComboBox.getSelectedItem().toString());
+					// Calculates the magic constant
+					magicConstat.setText("All rows and columns must add: " + constant * ((constant*constant + 1) / 2));
+
+					// Creates a reference to the model
+					magicSquareModel = new MagicSquereModel(gameMatrix,Integer.parseInt(sizesComboBox.getSelectedItem().toString()), unknow );
+
+					//
+					addActionListenerToButtons();
+					
+					// See the class javadoc for more information
+					magicSquareModel.read();
 				}
-				
-				elapsedSeconds = 0;
-
-				createTheButtons();
-
-				updateElapsedTime();
-				// Get the number of the level
-				int constant = Integer.parseInt(sizesComboBox.getSelectedItem().toString());
-				// Calculates the magic constant
-				magicConstat.setText("All rows and columns must add: " + constant * ((constant*constant + 1) / 2));
-
-				// Creates a reference to the model
-				magicSquareModel = new MagicSquereModel(gameMatrix,Integer.parseInt(sizesComboBox.getSelectedItem().toString()) );
-
-
-
-				for(int rows=0;rows<gameMatrix.length;rows++)
-				{
-					for(int cols=0;cols<gameMatrix.length;cols++)
-					{
-						ActionListener myButtonListener = new ButtonListener();
-						gameMatrix[rows][cols].addActionListener(myButtonListener);
-
-					}
-				}
-
-				// See the class javadoc for more information
-				magicSquareModel.startGame();
-				magicSquareModel.read();
-
-
 			}
 		} );
 	}
 
+	/**
+	 * 
+	 */
+	public void fillTheMatrix()
+	{
+		for(int rows=0;rows<gameMatrix.length;rows++)
+		{
+			for(int cols=0;cols<gameMatrix.length;cols++)
+			{
+				gameMatrix[rows][cols].setText("");
+			}
+		}
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public void addActionListenerToButtons()
+	{
+		for(int rows=0;rows<gameMatrix.length;rows++)
+		{
+			for(int cols=0;cols<gameMatrix.length;cols++)
+			{
+				ActionListener myButtonListener = new ButtonListener();
+				gameMatrix[rows][cols].addActionListener(myButtonListener);
+			}
+		}
+	}
+
+
+	/**
+	 * 
+	 */
+	public void createTheButtons()
+	{
+		centerPosition.removeAll();
+
+		gameMatrix = new JButton[dimension][dimension];
+		// Makes a gridLayout of the matrix length
+		centerPosition.setLayout(new GridLayout(dimension,dimension));
+
+		// Fills the gridLayout with the buttons 
+		for(int rows=0;rows<gameMatrix.length;rows++)
+		{
+			for(int cols=0;cols<gameMatrix.length;cols++)
+			{
+				gameMatrix[rows][cols] =  new JButton();
+				gameMatrix[rows][cols].setFont(new Font("Serif", Font.PLAIN, 30));
+				centerPosition.add(gameMatrix[rows][cols]);	
+			}
+		}
+		centerPosition.updateUI();
+		repaint();
+	}
+
+	// NO SE ESTÁ USANDO 
+	
+	
 	/**
 	 * Temporary method that validates if the given matrix
 	 * is valid, and if the user win or lose
@@ -379,6 +456,8 @@ public class MagicSquareView extends JApplet implements ActionListener
 			JOptionPane.showMessageDialog(null, ("Invalid Data"));
 		}
 	}
+	
+	
 	/**
 	 * Its a merely esthetic change, that modifies
 	 * the form and the color of the buttons, watch 
@@ -435,14 +514,12 @@ public class MagicSquareView extends JApplet implements ActionListener
 		if (level != -2)
 		{
 			String text = String.format("Level: %d. Time %02d:%02d"
-					, this.dimension - 2
-					, minutes
-					, seconds);
+										, this.dimension - 2
+										, minutes
+										, seconds);
 			this.magicTime.setText(text);
 		}
-
 	}
-
 
 	/**
 	 * 
@@ -464,33 +541,37 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 	}
 
-
+	/**
+	 * 
+	 * @author Diego Orozco & Cristian Rodriguez
+	 *
+	 */
 	class ButtonListener extends MagicSquareView implements ActionListener 
 	{
 		private int newNumber;
 
+		/**
+		 * 
+		 */
 		@Override public void actionPerformed(ActionEvent e)
 		{
-			recorrerMatriz();
 			JButton source = (JButton) e.getSource();
 			try 
 			{
-				recorrerMatriz();
 				this.newNumber = Integer.parseInt(JOptionPane.showInputDialog(null, source.getText() + " Insert the number"));
 				source.setText(String.valueOf(newNumber));				
-		
-				
 			}
 			catch (NumberFormatException a)
 			{
 				JOptionPane.showMessageDialog(null, "Only numbers are valid!", "Warning", JOptionPane.WARNING_MESSAGE);
 			}
-			
 		}
-
-
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean recorrerMatriz()
 	{
 		for(int rows=0;rows< this.dimension;rows++)
