@@ -153,6 +153,7 @@ public class MagicSquereModel extends Thread
 	 */
 	public boolean isMagicSquare()
 	{
+		this.isValid = true;
 		if (this.isValid)
 		{
 			// check the rows
@@ -192,7 +193,6 @@ public class MagicSquereModel extends Thread
 			if (sumValues != this.magicConstant)
 			{
 				// indicates that column number does not meet the magic condition
-				printErr(col, "Column");	
 				this.isValid = false;
 			}
 		}
@@ -218,7 +218,6 @@ public class MagicSquereModel extends Thread
 			if (sumValues != this.magicConstant)
 			{
 				// indicates that row number does not meet the magic condition
-				printErr(row, "Row");	
 				this.isValid = false;
 			}
 
@@ -257,17 +256,42 @@ public class MagicSquereModel extends Thread
 		}
 
 	}
-
-	/**
-	 * print the number (column or row) that does not meet the condition
-	 * @param notMagic number of column or row
-	 * @param type (column or row)
-	 */
-	public void printErr(int notMagic, String type)
+	
+	public boolean isFill()
 	{
-		this.isValid = false;
-		JOptionPane.showMessageDialog(null, type + notMagic + 1 + "is not magic", "Attention", JOptionPane.WARNING_MESSAGE);
+		for (int row = 0; row < this.dimensions && this.isValid == true; row++)
+		{
+			for (int col = 0; col < this.dimensions; col++ )
+			{
+				if ( this.gameMatrix[row][col].getText().toString().equals("") )
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
+	public boolean seachValue(int value)
+	{
+		for (int row = 0; row < this.dimensions && this.isValid == true; row++)
+		{
+			for (int col = 0; col < this.dimensions; col++ )
+			{
+				if ( this.gameMatrix[row][col].getText().toString().equals("") )
+				{
+					if ( Integer.parseInt( this.gameMatrix[row][col].getText().toString() ) == value )
+					{
+						System.out.print( this.gameMatrix[row][col].getText() );
+					
+						return false;
+					}
+				}
+				
+			}
+			System.out.println();
+		}
+		return true;
 	}
 
 	/**

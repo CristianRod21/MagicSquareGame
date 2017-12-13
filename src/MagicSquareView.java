@@ -282,7 +282,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 	 */
 	public void createMagicConstantSquare()
 	{
-		magicConstat = new JLabel("All rows and columns must add: ");
+		magicConstat = new JLabel("All rows, columns and diagonals must add: ");
 		magicConstat.setForeground(new Color(32, 178, 170));
 		magicConstat.setBackground(new Color(0, 0, 255));
 		magicConstat.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -382,22 +382,36 @@ public class MagicSquareView extends JApplet implements ActionListener
 			// When the start button is pressed
 			@Override public void actionPerformed(ActionEvent event)
 			{
-				if ( magicSquareModel.isMagicSquare() )
+				System.out.println("hola");
+				if ( magicSquareModel.isFill() )
 				{
-					String ruta = null;
-					if ( unknow )
-						ruta = "Record-0" + (dimension-2) + ".txt";
-					else
-						ruta = "Record-" + (dimension-2)  + ".txt";
-
-					elapsedTime.stop();
-					JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
-					if (isBest(ruta))
+					if ( magicSquareModel.isMagicSquare() )
 					{
-						overWriteBestScore(ruta);
-					}
+						String ruta = null;
+						if ( unknow )
+							ruta = "Record-0" + (dimension-2) + ".txt";
+						else
+							ruta = "Record-" + (dimension-2)  + ".txt";
 
+						elapsedTime.stop();
+						JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
+						if (isBest(ruta))
+						{
+							overWriteBestScore(ruta);
+						}
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "Sorry, the matrix is not magic");
+						
+					}
 				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Sorry, the matrix must be full");
+				}
+
+
 			}
 		} );
 	}
@@ -563,7 +577,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 					// Get the number of the level
 					int constant =  (dimension * (dimension*dimension + 1) / 2);
 					// Calculates the magic constant
-					magicConstat.setText("All rows and columns must add: " + constant);
+					magicConstat.setText("All rows, columns and diagonals must add: " + constant);
 
 					// Creates a reference to the model
 					magicSquareModel = new MagicSquereModel(gameMatrix, dimension, unknow, constant );
@@ -579,6 +593,10 @@ public class MagicSquareView extends JApplet implements ActionListener
 					else
 						ruta = "Record-" + (dimension-2)  + ".txt";
 					bestMagicTime.setText(getBestTimeRecord(ruta));
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Please select the Size and \n the Enable Unknowns");
 				}
 			}
 		} );
@@ -725,7 +743,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 			{
 				this.newNumber = Integer.parseInt(JOptionPane.showInputDialog(null, source.getText() + " Insert the number"));
 				source.setBackground(Color.ORANGE);
-				source.setText(String.valueOf(newNumber));				
+				source.setText(String.valueOf(newNumber));					
 			}
 			catch (NumberFormatException a)
 			{
