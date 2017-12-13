@@ -1,4 +1,3 @@
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -9,8 +8,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.util.Formatter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -27,6 +34,8 @@ import com.sun.prism.Graphics;
  */
 public class MagicSquareView extends JApplet implements ActionListener 
 {
+	public MagicSquareView() {
+	}
 	// A reference to a matrix with the JButtons
 	private JButton gameMatrix[][] = null;
 
@@ -60,6 +69,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 	//
 	private JLabel magicTime = null;
 
+	//
+	private JLabel bestMagicTime = null;
+
 	// The main lower panel
 	private JPanel lowerPanel = null;
 
@@ -84,6 +96,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 	//
 	private boolean valuesSelect = false;
+
+	//
+	private Formatter textFormatter = null;
 
 	/**
 	 * This methods calls the JApplet to run 
@@ -164,9 +179,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 	public void addComponents()
 	{
 		// Adds the created elements to the entire view
-		this.add(lowerPanel ,BorderLayout.NORTH);
-		this.add(indicatorPanel ,BorderLayout.SOUTH);
-		this.add(centerPosition,BorderLayout.CENTER);
+		getContentPane().add(lowerPanel ,BorderLayout.NORTH);
+		getContentPane().add(indicatorPanel ,BorderLayout.SOUTH);
+		getContentPane().add(centerPosition,BorderLayout.CENTER);
 	}
 
 	/**
@@ -182,17 +197,34 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 		//
 		createLevelBox();
-		lowerPanel.add(new JLabel("Size: "));
+		JLabel label = new JLabel("Size: ");
+		label.setForeground(new Color(255, 140, 0));
+		label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lowerPanel.add(label);
 		lowerPanel.add(sizesComboBox);
 
 		//
 		createunknownBox();
-		lowerPanel.add(new JLabel("unknown: "));
-		lowerPanel.add(unknownComboBox);
 
 		//
 		startButton = new JButton("Create");
+		startButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		startButton.setForeground(new Color(0, 128, 128));
+		startButton.setBackground(new Color(0, 139, 139));
+		startButton.setIcon(new ImageIcon(MagicSquareView.class.getResource("/com/sun/javafx/webkit/prism/resources/mediaPlayDisabled.png")));
 		lowerPanel.add(startButton);
+		JLabel lblUnknown = new JLabel("Enable Unknowns: ");
+		lblUnknown.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblUnknown.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUnknown.setForeground(new Color(255, 127, 80));
+		lowerPanel.add(lblUnknown);
+		lowerPanel.add(unknownComboBox);
+
+
+		createBestsTime();
+
+		lowerPanel.add(bestMagicTime, BorderLayout.EAST);
+
 	}
 
 	/**
@@ -216,7 +248,11 @@ public class MagicSquareView extends JApplet implements ActionListener
 
 		//
 		summit = new JButton("Summit");
+		summit.setForeground(new Color(255, 0, 51));
+		summit.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 16));
+		summit.setBackground(new Color(255, 0, 51));
 		indicatorPanel.add(summit);
+		summit.setVisible(false);
 	}
 
 	/**
@@ -226,6 +262,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 	public void createLevelBox()
 	{
 		sizesComboBox= new JComboBox<Object>(gameLevels);
+		sizesComboBox.setForeground(new Color(255, 140, 0));
 	}
 
 	/**
@@ -234,6 +271,8 @@ public class MagicSquareView extends JApplet implements ActionListener
 	public void createunknownBox()
 	{	
 		unknownComboBox = new JComboBox<Object>(unknowLevels);
+		unknownComboBox.setForeground(new Color(255, 140, 0));
+		unknownComboBox.setBackground(new Color(255, 140, 0));
 	}
 
 
@@ -244,8 +283,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 	public void createMagicConstantSquare()
 	{
 		magicConstat = new JLabel("All rows and columns must add: ");
-		magicConstat.setBackground(new Color(220, 20, 60));
-		magicConstat.setFont(new Font("Serif", Font.PLAIN, 20));
+		magicConstat.setForeground(new Color(32, 178, 170));
+		magicConstat.setBackground(new Color(0, 0, 255));
+		magicConstat.setFont(new Font("Tahoma", Font.PLAIN, 20));
 	}
 
 	/**
@@ -255,10 +295,25 @@ public class MagicSquareView extends JApplet implements ActionListener
 	public void createElapsedTime()
 	{
 		magicTime = new JLabel();
-		magicTime.setFont(new Font("Serif", Font.PLAIN, 20));
+		magicTime.setForeground(new Color(32, 178, 170));
+		magicTime.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		this.elapsedTime = new Timer(1000, this);
-		this.elapsedTime.start();
+		this.elapsedTime.stop();
 	}
+
+	/**
+	 * 
+	 */
+	public void createBestsTime()
+	{
+		bestMagicTime = new JLabel();
+		bestMagicTime.setHorizontalAlignment(SwingConstants.LEFT);
+		bestMagicTime.setForeground(new Color(30, 144, 255));
+		bestMagicTime.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		//this.elapsedTime = new Timer(1000, this);
+		bestMagicTime.setVisible(false);
+	}
+
 
 	/**
 	 * 
@@ -329,12 +384,154 @@ public class MagicSquareView extends JApplet implements ActionListener
 			{
 				if ( magicSquareModel.isMagicSquare() )
 				{
+					String ruta = null;
+					if ( unknow )
+						ruta = "Record-0" + (dimension-2) + ".txt";
+					else
+						ruta = "Record-" + (dimension-2)  + ".txt";
+
+					elapsedTime.stop();
 					JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
+					if (isBest(ruta))
+					{
+						overWriteBestScore(ruta);
+					}
+
 				}
 			}
 		} );
 	}
 
+
+	public boolean isBest(String ruta)	
+	{
+		BufferedReader textReader = null;
+		File file = null;
+		String temp[] = null;
+
+		try
+		{
+			file = new File(this.getClass().getResource(ruta).toURI());
+		} 
+		catch (URISyntaxException e)
+		{
+
+		}
+		catch (NullPointerException ne)
+		{
+
+			overWriteBestScore(ruta);
+			return false;
+		}
+
+		try 
+		{
+			textReader = new BufferedReader(new FileReader(file));
+		} 
+		catch (FileNotFoundException e1)
+		{
+			e1.printStackTrace();
+		}
+
+		try 
+		{
+			temp = textReader.readLine().split(" ");
+		} 
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (Integer.valueOf(temp[0]) > (elapsedSeconds))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public String getBestTimeRecord(String ruta)
+	{
+		BufferedReader textReader = null;
+		File file = null;
+		String temp[] = null;
+
+		try
+		{
+			file = new File(this.getClass().getResource(ruta).toURI());
+		} 
+		catch (URISyntaxException e)
+		{
+
+		}
+		catch (NullPointerException ne)
+		{
+			return "No best time register";
+		}
+
+		try 
+		{
+			textReader = new BufferedReader(new FileReader(file));
+		} 
+		catch (FileNotFoundException e1)
+		{
+			e1.printStackTrace();
+		}
+
+		try 
+		{
+			temp = textReader.readLine().split(" ");
+		} 
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int temporal = Integer.valueOf(temp[0]);
+		StringBuilder name = new StringBuilder();
+
+		for (int index = 1; index < temp.length; index++)
+		{
+			name.append(temp[index]);
+			name.append(" ");
+		}
+
+		long minutes = temporal / 60;
+		long seconds = temporal % 60;
+
+		String text = String.format("Best time is from %sand it is %02d:%02d min"
+				, name.toString()
+				, minutes
+				, seconds);
+
+		return text;
+	}
+
+
+	public void overWriteBestScore(String ruta)
+	{	
+		//**
+		try 
+		{			
+			textFormatter = new Formatter(ruta);
+		}
+		catch(Exception e)
+		{
+			System.out.print("cosito");
+		}
+
+
+		String message = JOptionPane.showInputDialog("Insert your name");
+
+		textFormatter.format( "%d %s",elapsedSeconds,  message );
+
+		textFormatter.close();
+
+	}
 
 	/**
 	 * When the start button is pressed
@@ -347,8 +544,14 @@ public class MagicSquareView extends JApplet implements ActionListener
 			// When the start button is pressed
 			@Override public void actionPerformed(ActionEvent event)
 			{
+				summit.setVisible(true);
+				bestMagicTime.setVisible(true);
 				if (dimension != 0 && valuesSelect)
 				{
+					elapsedTime.start();
+					elapsedTime.setInitialDelay(1);
+					elapsedSeconds = 0;
+
 					//
 					createTheButtons();
 
@@ -356,20 +559,26 @@ public class MagicSquareView extends JApplet implements ActionListener
 					fillTheMatrix();
 					//
 					updateElapsedTime();
-					
+
 					// Get the number of the level
-					int constant = Integer.parseInt(sizesComboBox.getSelectedItem().toString());
+					int constant =  (dimension * (dimension*dimension + 1) / 2);
 					// Calculates the magic constant
-					magicConstat.setText("All rows and columns must add: " + constant * ((constant*constant + 1) / 2));
+					magicConstat.setText("All rows and columns must add: " + constant);
 
 					// Creates a reference to the model
-					magicSquareModel = new MagicSquereModel(gameMatrix,Integer.parseInt(sizesComboBox.getSelectedItem().toString()), unknow );
-
+					magicSquareModel = new MagicSquereModel(gameMatrix, dimension, unknow, constant );
 					//
 					addActionListenerToButtons();
-					
+
 					// See the class javadoc for more information
 					magicSquareModel.read();
+
+					String ruta = null;
+					if ( unknow )
+						ruta = "Record-0" + (dimension-2) + ".txt";
+					else
+						ruta = "Record-" + (dimension-2)  + ".txt";
+					bestMagicTime.setText(getBestTimeRecord(ruta));
 				}
 			}
 		} );
@@ -387,9 +596,9 @@ public class MagicSquareView extends JApplet implements ActionListener
 				gameMatrix[rows][cols].setText("");
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -431,33 +640,8 @@ public class MagicSquareView extends JApplet implements ActionListener
 		repaint();
 	}
 
-	// NO SE ESTÁ USANDO 
-	
-	
-	/**
-	 * Temporary method that validates if the given matrix
-	 * is valid, and if the user win or lose
-	 */
-	public void validateMagicSquare()
-	{
-		magicSquareModel.isMagicSquare();
 
-		// if the data entered by the user was correct
-		if ( magicSquareModel.read() ) 
-		{  
-			// the magic square is valid
-			if ( magicSquareModel.isMagicSquare() && magicSquareModel.isValid())
-			{
-				JOptionPane.showMessageDialog(null, "You win, is a Magic Square");
-			}
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(null, ("Invalid Data"));
-		}
-	}
-	
-	
+
 	/**
 	 * Its a merely esthetic change, that modifies
 	 * the form and the color of the buttons, watch 
@@ -468,7 +652,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 	{
 		try 
 		{
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
 		} 
 		catch (ClassNotFoundException invalidClassE) 
 		{
@@ -514,32 +698,13 @@ public class MagicSquareView extends JApplet implements ActionListener
 		if (level != -2)
 		{
 			String text = String.format("Level: %d. Time %02d:%02d"
-										, this.dimension - 2
-										, minutes
-										, seconds);
-			this.magicTime.setText(text);
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void resetElapsedTime()
-	{
-		this.elapsedSeconds = 0;
-		long minutes = this.elapsedSeconds / 60;
-		long seconds = this.elapsedSeconds % 60;
-		level = this.dimension-2;
-		if (level != -2)
-		{
-			String text = String.format("Level: %d. Time %02d:%02d"
 					, this.dimension - 2
 					, minutes
 					, seconds);
 			this.magicTime.setText(text);
 		}
-
 	}
+
 
 	/**
 	 * 
@@ -559,6 +724,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 			try 
 			{
 				this.newNumber = Integer.parseInt(JOptionPane.showInputDialog(null, source.getText() + " Insert the number"));
+				source.setBackground(Color.ORANGE);
 				source.setText(String.valueOf(newNumber));				
 			}
 			catch (NumberFormatException a)
@@ -567,25 +733,6 @@ public class MagicSquareView extends JApplet implements ActionListener
 			}
 		}
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean recorrerMatriz()
-	{
-		for(int rows=0;rows< this.dimension;rows++)
-		{
-			for(int cols=0;cols<magicSquareModel.gameMatrix.length;cols++)
-			{
-				System.out.println("Hola " + gameMatrix[rows][cols].getText());
-
-			}
-			System.out.println();
-		}
-		return false;
-	}
-
 
 }
 

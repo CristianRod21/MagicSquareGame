@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -34,13 +35,10 @@ public class MagicSquereModel extends Thread
 	private boolean isValid = true;
 
 	//
-	private String level = null;
-
-	//
 	private boolean unknow = false;
 
 	//
-	BufferedReader text = null;
+	BufferedReader textReader = null;
 
 
 
@@ -49,11 +47,12 @@ public class MagicSquereModel extends Thread
 	 * @param magicSquareMatrix
 	 * @param dimensions
 	 */
-	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions, boolean unknow)
+	public MagicSquereModel(JButton magicSquareMatrix[][],int dimensions, boolean unknow, int magicConstant)
 	{
 		this.gameMatrix = magicSquareMatrix;
 		this.dimensions =dimensions;
 		this.unknow = unknow;
+		this.magicConstant = magicConstant;
 	}
 
 	
@@ -69,10 +68,9 @@ public class MagicSquereModel extends Thread
 	public boolean read()
 	{
 		readTextFile();
-		// calculate the magic constant
-		this.magicConstant = (dimensions *( (dimensions*dimensions + 1) / 2));
-
+	
 		// Convert string data from the buttons to integers
+		
 		if (this.unknow)
 		{
 			fillWithUnknow();
@@ -89,11 +87,20 @@ public class MagicSquereModel extends Thread
 		boolean random1 = new Random().nextBoolean();
 		int myInt = (random1) ? 1 : 0;
 
-		File file = new File("C:\\Users\\Diego Orozco\\MagicSquareGame\\assets\\" + "level0" + (dimensions-2) + "-0"  + (myInt + 1)   + ".txt");
-
+		File file = null;
+		try
+		{
+			file = new File(this.getClass().getResource("level0" + (dimensions-2) + "-0"  + (myInt + 1)   + ".txt").toURI());
+		} 
+		catch (URISyntaxException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		try 
 		{
-			text = new BufferedReader(new FileReader(file));
+			textReader = new BufferedReader(new FileReader(file));
 		} 
 		catch (FileNotFoundException e1)
 		{
@@ -106,44 +113,35 @@ public class MagicSquereModel extends Thread
 	{
 		try
 		{
-
-
+			int count = 0;
+			String[] temp = textReader.readLine().split(" ");
 			for ( int rows = 0; rows < this.dimensions; ++rows )
-			{
+			{			
 				// Read all values for current row
 				for ( int col = 0; col < this.dimensions; col++ )
 				{
 					boolean random = new Random().nextBoolean();
-
-					try
-					{
-						String temp = String.valueOf((char)text.read()) ;
-
-						if (random)
-						{
-							gameMatrix[rows][col].setText(temp.trim());
-						}		
+					
+					if (random)
+					{							
+						gameMatrix[rows][col].setText(temp[count]);
 					}
-					catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return false;
-					}
-
+					count++;
+				
 				}
 			}
 		}
 		catch( InputMismatchException exeption)
 		{
 			return false;
+		} 
+		catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-
 		return true;
 
 	}
-
-
 
 	/**
 	 * Method that is responsible for the validation 
@@ -187,7 +185,7 @@ public class MagicSquereModel extends Thread
 			sumValues = 0;
 			for (int row = 0; row < this.dimensions; row++)
 			{
-				sumValues += Integer.parseInt(this.gameMatrix[row][col].getText().toString() ); 
+				sumValues += Integer.parseInt(this.gameMatrix[row][col].getText().toString().trim() ); 
 			}
 
 			// if the total sum is different from the constant, it is not a magic square
