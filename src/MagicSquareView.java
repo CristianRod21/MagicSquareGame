@@ -36,13 +36,13 @@ public class MagicSquareView extends JApplet implements ActionListener
 	// A reference to a ComboBox, that contains the levels 
 	private JComboBox<Object> sizesComboBox = null;
 
-	// Contains the options about the unknows
+	// Contains the options about the unknowns
 	private JComboBox<Object> unknownComboBox = null;
 
 	// An array with the levels of the game
 	private String gameLevels[]= {"-","3","4","5","6", "7", "8"};
 	
-	// An array with uknow options
+	// An array with uknokw options
 	private String unknowLevels[]= {"-","Yes", "No"};
 
 	// A flag in order to know if the user choose the option as a yes
@@ -54,7 +54,7 @@ public class MagicSquareView extends JApplet implements ActionListener
 	// The welcome image panel 
 	private JLabel picLabel  = null;
 
-	// The Jbutton, to star the game
+	// The Button, to star the game
 	private JButton startButton = null;
 
 	// When the level is finished, there is summit button to make checks
