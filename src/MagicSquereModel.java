@@ -39,6 +39,8 @@ public class MagicSquereModel extends Thread
 
 	//
 	BufferedReader textReader = null;
+	
+	BestHighScores bestHighScores = new BestHighScores();
 
 
 
@@ -67,7 +69,7 @@ public class MagicSquereModel extends Thread
 	 */
 	public boolean read()
 	{
-		readTextFile();
+		bestHighScores.readTextFile(dimensions, textReader);
 	
 		// Convert string data from the buttons to integers
 		
@@ -78,35 +80,6 @@ public class MagicSquereModel extends Thread
 		// In case of invalid data
 		return true;
 	}
-
-	/**
-	 * 
-	 */
-	public void readTextFile()
-	{
-		boolean random1 = new Random().nextBoolean();
-		int myInt = (random1) ? 1 : 0;
-
-		File file = null;
-		try
-		{
-			file = new File(this.getClass().getResource("level0" + (dimensions-2) + "-0"  + (myInt + 1)   + ".txt").toURI());
-		} 
-		catch (URISyntaxException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try 
-		{
-			textReader = new BufferedReader(new FileReader(file));
-		} 
-		catch (FileNotFoundException e1)
-		{
-			e1.printStackTrace();
-		}
-	}	
 
 
 	public boolean fillWithUnknow()
