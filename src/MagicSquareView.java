@@ -2,28 +2,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.util.Formatter;
-import java.util.InputMismatchException;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import com.sun.prism.Graphics;
 
 
 /**
@@ -37,6 +25,11 @@ import com.sun.prism.Graphics;
 
 public class MagicSquareView extends JApplet implements ActionListener 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// A reference to a matrix with the JButtons
 	private JButton gameMatrix[][] = null;
 
@@ -105,6 +98,11 @@ public class MagicSquareView extends JApplet implements ActionListener
 	
 	// The route in order to recover records
 	private String fileRoute = null;
+	
+	public MagicSquareView()
+	{
+		init();
+	}
 
 	/**
 	 * This methods calls the JApplet to run 
@@ -705,7 +703,17 @@ public class MagicSquareView extends JApplet implements ActionListener
 		}
 	}
 
-
+	/**
+	 * 
+	 */
+	@Override
+	public void actionPerformed(ActionEvent event)
+	{
+		if ( event.getSource() == this.elapsedTime )
+		{
+			this.updateElapsedTime();
+		}
+	}
 	/**
 	 * This is the class that reads the numbers 
 	 * recovered from the buttons, when one of them
@@ -716,6 +724,11 @@ public class MagicSquareView extends JApplet implements ActionListener
 	 */
 	class ButtonListener extends MagicSquareView implements ActionListener 
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
 		// The number given
 		private int newNumber = 0;
 

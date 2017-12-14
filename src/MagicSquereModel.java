@@ -57,10 +57,11 @@ public class MagicSquereModel extends Thread
 		this.magicConstant = magicConstant;
 	}
 
-	
+	/**
+	 * default constructor
+	 */
 	public MagicSquereModel()
 	{
-		
 	}
 
 	/**
@@ -82,25 +83,33 @@ public class MagicSquereModel extends Thread
 	}
 
 
+	/**
+	 * this method is responsible for filling the matrix 
+	 * of magic square with unknowns. Leave empty spaces 
+	 * for the user to complete the game 
+	 * * @return true, if the process is successful
+	 */
 	public boolean fillWithUnknow()
 	{
 		try
 		{
 			int count = 0;
+			
+			// divide each number into an array, to later read it
 			String[] temp = textReader.readLine().split(" ");
 			for ( int rows = 0; rows < this.dimensions; ++rows )
 			{			
-				// Read all values for current row
 				for ( int col = 0; col < this.dimensions; col++ )
 				{
+					// the process to fill the matrix is ​​random
 					boolean random = new Random().nextBoolean();
 					
 					if (random)
-					{							
+					{				
+						// fill the matrix with the number read it
 						gameMatrix[rows][col].setText(temp[count]);
 					}
 					count++;
-				
 				}
 			}
 		}
@@ -129,19 +138,17 @@ public class MagicSquereModel extends Thread
 		this.isValid = true;
 		if (this.isValid)
 		{
-			// check the rows
+			// check the rows, view the javaDoc of the method
 			checkRows();
 			if (this.isValid)
 			{
-				// check the columns
+				// check the columns, view the javaDoc of the method
 				checkColums();
-
 				if (this.isValid)
 				{
-					// check the diagonals
+					// check the diagonals, view the javaDoc of the method
 					checkDiagonals();
 				}
-
 			}
 		}
 		return this.isValid;
@@ -152,13 +159,16 @@ public class MagicSquereModel extends Thread
 	 */
 	public void checkRows()
 	{
+		// the sum start in zero
 		long sumValues = 0;
-
+		
+		// go through the matrix
 		for (int col = 0; col < this.dimensions && this.isValid; col++ )
 		{
 			sumValues = 0;
 			for (int row = 0; row < this.dimensions; row++)
 			{
+				// make the sum
 				sumValues += Integer.parseInt(this.gameMatrix[row][col].getText().toString().trim() ); 
 			}
 
@@ -177,13 +187,16 @@ public class MagicSquereModel extends Thread
 	 */
 	public void checkColums()
 	{
+		// the sum start in zero
 		long sumValues = 0;
 
+		// go through the matrix
 		for (int row = 0; row < this.dimensions && this.isValid == true; row++)
 		{
 			sumValues = 0;
 			for (int col = 0; col < this.dimensions; col++ )
 			{
+				// make the sum
 				sumValues += Integer.parseInt(this.gameMatrix[row][col].getText().toString() );
 			}
 
@@ -202,8 +215,10 @@ public class MagicSquereModel extends Thread
 	 */
 	public void checkDiagonals()
 	{
+		// the sum start in zero
 		long sumValues = 0;
 
+		// go through the matrix
 		for (int row = 0; row < this.dimensions; row++)
 		{
 			sumValues += Integer.parseInt(this.gameMatrix[row][row].getText().toString() );
@@ -215,8 +230,10 @@ public class MagicSquereModel extends Thread
 			this.isValid = false;
 		}
 
+		// the sum start in zero
 		sumValues = 0;
 
+		// go through the matrix of the other way
 		for (int row = this.dimensions - 1; row >= 0; row--)
 		{
 			sumValues += Integer.parseInt(this.gameMatrix[row][row].getText().toString() );
@@ -227,9 +244,13 @@ public class MagicSquereModel extends Thread
 		{
 			this.isValid = false;
 		}
-
 	}
 	
+	/**
+	 * process that verifies if the entire matrix is ​​not empty. 
+	 * Because it is necessary to know when validation is allowed
+	 * @return true, if the all matrix is full
+	 */
 	public boolean isFill()
 	{
 		for (int row = 0; row < this.dimensions && this.isValid == true; row++)
@@ -245,6 +266,11 @@ public class MagicSquereModel extends Thread
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
 	public boolean seachValue(int value)
 	{
 		for (int row = 0; row < this.dimensions && this.isValid == true; row++)
@@ -274,6 +300,4 @@ public class MagicSquereModel extends Thread
 	{
 		return this.isValid;
 	}
-
-
 }
